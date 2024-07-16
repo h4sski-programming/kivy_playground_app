@@ -7,12 +7,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.properties import (
     NumericProperty, ReferenceListProperty, ObjectProperty
 )
 from kivy.clock import Clock
 from kivy.vector import Vector
+from hashlib import sha256
 
 
 class MenuScreen(BoxLayout):
@@ -60,14 +62,45 @@ class MenuScreen(BoxLayout):
 class PongGame(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.orientation = 'horizontal'
+        # self.orientation = 'horizontal'
         # player_left = PlayerScreen(name='left')
         # player_right = PlayerScreen(name='right')
         # self.add_widget(player_left)
         # self.add_widget(player_right)
-        self.add_widget(Button(text='left'))
-        self.add_widget(Button(text='right'))
+        # self.add_widget(Button(text='left'))
+        # self.add_widget(Button(text='right'))
+        
+        # testing part
+        self.orientation = 'vertical'
+        # self.size_hint = (0.5, 0.5)
+        # self.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+        self.padding = (100, 20, 100, 40)
+        
+        self.text_label = Label(
+            text='Password codder',
+            )
+        self.add_widget(self.text_label)
+        
+        self.pass_input = TextInput(
+            padding_y = (20,20),
+            size_hint_y = None,
+            size = (1, dp(60)),
+            multiline = False,
+            )
+        self.add_widget(self.pass_input)
+        
+        self.codde_button = Button(
+            text = 'Code your pass',
+            size_hint_y = None,
+            size = (1, dp(90)),
+            on_press = self.code_pass,
+            # pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            )
+        self.add_widget(self.codde_button)
     
+    
+    def code_pass(self, widget):
+        self.text_label.text = str(sha256(self.pass_input.text.encode('utf-8')).hexdigest())
 
 
 class MainWidget(BoxLayout):
