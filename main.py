@@ -10,19 +10,21 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.properties import (
-    NumericProperty, ReferenceListProperty, ObjectProperty
+    NumericProperty, ReferenceListProperty, ObjectProperty, OptionProperty
 )
 from kivy.clock import Clock
 from kivy.vector import Vector
 from hashlib import sha256
+
+from pressurecalculator import PressureCalculator
 
 
 class MenuScreen(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'horizontal'
-        self.size_hint = (1, None)
-        self.height = dp(60)
+        # self.size_hint = (1, None)
+        # self.height = dp(60)
         
         btn_home = Button(text='Start', size_hint_x=4)
         btn_profile = Button(text='Restart')
@@ -72,9 +74,6 @@ class PongGame(BoxLayout):
         
         # testing part
         self.orientation = 'vertical'
-        # self.size_hint = (0.5, 0.5)
-        # self.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
-        self.padding = (100, 20, 100, 40)
         
         self.text_label = Label(
             text='Password codder',
@@ -82,6 +81,8 @@ class PongGame(BoxLayout):
         self.add_widget(self.text_label)
         
         self.pass_input = TextInput(
+            hint_text = 'Type here your password',
+            halign = 'center',
             padding_y = (20,20),
             size_hint_y = None,
             size = (1, dp(60)),
@@ -93,23 +94,47 @@ class PongGame(BoxLayout):
             text = 'Code your pass',
             size_hint_y = None,
             size = (1, dp(90)),
-            on_press = self.code_pass,
-            # pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            on_press = self.hash_text,
             )
         self.add_widget(self.codde_button)
     
     
-    def code_pass(self, widget):
+    def hash_text(self, widget):
         self.text_label.text = str(sha256(self.pass_input.text.encode('utf-8')).hexdigest())
 
 
-class MainWidget(BoxLayout):
+class BallLayout(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.orientation = 'vertical'
-        self.add_widget(MenuScreen())
-        game = PongGame()
-        self.add_widget(game)
+        self.add_widget(Button(text='left'))
+
+class MainWidget(FloatLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # self.orientation = 'vertical'
+        
+        menu = MenuScreen()
+        menu.pos_hint = {'x': 0, 'top':1}
+        menu.size_hint = (1, None)
+        menu.height = dp(60)
+        self.add_widget(menu)
+        
+        # ball = BallLayout()
+        # self.assign_settings_main_screen(ball)
+        # self.add_widget(ball)
+        
+        # game = PongGame()
+        # self.assign_settings_main_screen(game)
+        # self.add_widget(game)
+        
+        calculator = PressureCalculator()
+        # self.assign_settings_main_screen(calculator)
+        self.add_widget(calculator)
+        
+    
+    def assign_settings_main_screen(self, widget:Widget):
+        widget.size_hint = (0.7, 0.6)
+        widget.pos_hint = {'center_x': 0.5, 'center_y': 0.45}
 
 
 class FirstKivyApp(App):
