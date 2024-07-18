@@ -113,11 +113,12 @@ class MainWidget(FloatLayout):
         super().__init__(**kwargs)
         # self.orientation = 'vertical'
         
-        menu = MenuScreen()
-        menu.pos_hint = {'x': 0, 'top':1}
-        menu.size_hint = (1, None)
-        menu.height = dp(60)
-        self.add_widget(menu)
+        # menu = MenuScreen()
+        # menu.pos_hint = {'x': 0, 'top':1}
+        # menu.size_hint = (1, 0.1)
+        # # menu.size_hint = (1, None)
+        # # menu.height = dp(60)
+        # self.add_widget(menu)
         
         # ball = BallLayout()
         # self.assign_settings_main_screen(ball)
@@ -128,6 +129,7 @@ class MainWidget(FloatLayout):
         # self.add_widget(game)
         
         calculator = PressureCalculator()
+        # calculator.size_hint = (1, 0.9)
         # self.assign_settings_main_screen(calculator)
         self.add_widget(calculator)
         

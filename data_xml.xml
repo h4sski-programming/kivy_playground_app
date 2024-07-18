@@ -1,0 +1,26 @@
+<dn>
+    <dn6>
+        <od>10.3</od>
+        <walls>
+            <sch10s>1.24</sch10s>
+            <sch40s>1.73</sch40s>
+            <sch80s>2.41</sch80s>
+        </walls>
+    </dn6>
+    <dn8>
+        <od>13.7</od>
+        <walls>
+            <sch10s>1.65</sch10s>
+            <sch40s>2.24</sch40s>
+            <sch80s>3.02</sch80s>
+        </walls>
+    </dn8>
+    <dn10>
+        <od>17.1</od>
+        <walls>
+            <sch10s>1.65</sch10s>
+            <sch40s>2.31</sch40s>
+            <sch80s>3.20</sch80s>
+        </walls>
+    </dn10>
+</dn>
