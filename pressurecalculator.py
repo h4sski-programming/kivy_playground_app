@@ -31,17 +31,19 @@ class PressureCalculator(BoxLayout):
         
         
         self.btn_calculate = Button(text='Calculate')
-        self.btn_calculate.size_hint = (0.8, 0.6)
+        self.btn_calculate.size_hint = (0.8, 0.4)
         self.btn_calculate.background_color = (0.3, 0.8, 0.3, 1)
         self.btn_calculate.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         self.value_label = Label(text='Press Calculate button to get solution')
         self.set_solution_lavel_display_values(self.value_label)
         
         ### solution labels, will be updated after calculation
-        self.od_label = Label(text='OD = ')
-        self.wall_label = Label(text='Wall = ')
-        self.id_label = Label(text='ID = ')
-        self.wall_area_label = Label(text='Wall Area = ')
+        self.solution_layout = GridLayout()
+        self.solution_layout.cols = 4
+        self.od_label = Label(text='OD')
+        self.wall_label = Label(text='Wall')
+        self.id_label = Label(text='ID')
+        self.wall_area_label = Label(text='Wall Area')
         self.set_solution_lavel_display_values(self.od_label)
         self.set_solution_lavel_display_values(self.wall_label)
         self.set_solution_lavel_display_values(self.id_label)
@@ -56,21 +58,22 @@ class PressureCalculator(BoxLayout):
         
         self.btn_calculate.bind(on_press=self.calculate_solution)
         
+        self.print_solution()
         
         self.add_widget(self.btn_calculate)
         self.add_widget(self.value_label)
+        self.add_widget(self.solution_layout)
         
-        self.print_solution()
         
         
     def print_solution(self):
-        self.add_widget(self.od_label)
-        self.add_widget(self.wall_label)
-        self.add_widget(self.id_label)
-        self.add_widget(self.wall_area_label)
-        self.add_widget(self.material_label)
-        self.add_widget(self.calc_temp_label)
-        self.add_widget(self.strenght_at_calc_temp_label)
+        self.solution_layout.add_widget(self.od_label)
+        self.solution_layout.add_widget(self.wall_label)
+        self.solution_layout.add_widget(self.id_label)
+        self.solution_layout.add_widget(self.wall_area_label)
+        self.solution_layout.add_widget(self.material_label)
+        self.solution_layout.add_widget(self.calc_temp_label)
+        self.solution_layout.add_widget(self.strenght_at_calc_temp_label)
                 
 
 
@@ -104,13 +107,13 @@ class PressureCalculator(BoxLayout):
         
         # solution = f'{od=}, {wall=}, id={id:.2f}, wall_area={wall_area:.2f}'
         
-        self.od_label.text = f'OD => {od}'
-        self.wall_label.text = f'Wall => {wall:.2f}'
-        self.id_label.text = f'ID => {id:.2f}'
-        self.wall_area_label.text = f'Wall Area => {wall_area:.2f}'
+        self.od_label.text = f'OD => {od} mm'
+        self.wall_label.text = f'Wall => {wall:.2f} mm'
+        self.id_label.text = f'ID => {id:.2f} mm'
+        self.wall_area_label.text = f'Wall Area => {wall_area:.2f} mm'
         self.material_label.text = f'Material = {material}'
-        self.calc_temp_label.text = f'Calculated temperature = {calc_temp}'
-        self.strenght_at_calc_temp_label.text = f'Strenght at calculated temp = {self.aproximate_strenght_at_calc_temp(material, calc_temp)}'
+        self.calc_temp_label.text = f'Calculated temperature = {calc_temp} C'
+        self.strenght_at_calc_temp_label.text = f'Strenght at calculated temp = {self.aproximate_strenght_at_calc_temp(material, calc_temp):.2f} MPa'
 
 
     # Validation main function
@@ -123,7 +126,6 @@ class PressureCalculator(BoxLayout):
             return False
         
         if not self.validate_calc_temp_input(material, calc_temp):
-            self.value_label.text = 'Type value for Calculation temperature field and press Calculate button again.'
             return False
         
         return True
@@ -167,32 +169,11 @@ class PressureCalculator(BoxLayout):
     ###################################
     
     def set_solution_lavel_display_values(self, widget:Widget) -> None:
-        widget.size_hint_y = 0.5
+        widget.size_hint_y = 0.3
     
     def aproximate_strenght_at_calc_temp(self, material, calc_temp) -> int:
         material_dict = self.db_json['strenght_at_temp'][material]
-        # material_list_temp_strenght = [[int(temp), strenght] for temp, strenght in material_dict.items()]
-        # lower_temp = 0
-        # higher_temp = 0
-        # for i, temp in enumerate(material_temps):
-        #     if calc_temp < temp:
-        #         # print(f'{i = }, {temp = }, {material_temps[i-1] = }')
-        #         lower_temp = material_temps[i-1]
-        #         higher_temp = temp
-        #         break
-        
-        # strenght_lower_temp = material_dict[f'{lower_temp}']
-        # strenght_higher_temp = material_dict[f'{higher_temp}']
-        # # print(f'{strenght_lower_temp = }')
-        # # print(f'{strenght_higher_temp = }')
-        
-        # for t in material_temps[::-1]:
-        #     if not material_dict[f'{t}'] > 0:
-        #         max_material_temp = t
-        #         break
-        # if material_temps[0] <= calc_temp <= max_material_temp:
-        #     self.value_label.text = f'Calculation out of temp range, for {material} try temp between {material_temps[0]} ~ {max_material_temp}'
-        
+        # initial values equal first element in the base
         lower_temp = int(list(material_dict.keys())[0])
         strenght_lower_temp = list(material_dict.values())[0]
         for temp, strenght in material_dict.items():
