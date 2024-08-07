@@ -10,6 +10,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
+from kivy.graphics import Color, Rectangle
 
 
 
@@ -18,7 +19,7 @@ class PressureCalculator(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
-        
+        # self.background_color = (0.5, 0.5, 0.5, 1)            # not working
         
         ### Load data from json file
         with open('data_input.json', mode='r') as json_file:
@@ -32,30 +33,14 @@ class PressureCalculator(BoxLayout):
         
         self.btn_calculate = Button(text='Calculate')
         self.btn_calculate.size_hint = (0.8, 0.4)
-        self.btn_calculate.background_color = (0.3, 0.8, 0.3, 1)
+        self.btn_calculate.background_color = (0.4, 0.8, 0.4, 1)
         self.btn_calculate.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
         self.value_label = Label(text='Press Calculate button to get solution')
-        self.set_solution_lavel_display_values(self.value_label)
+        self.value_label.size_hint = (1, 0.3)
+        self.value_label.color = (0.4, 0.8, 0.4, 1)
         
         ### solution labels, will be updated after calculation
-        self.solution_layout = GridLayout()
-        self.solution_layout.cols = 4
-        self.od_label = Label(text='OD')
-        self.wall_label = Label(text='Wall')
-        self.id_label = Label(text='ID')
-        self.wall_area_label = Label(text='Wall Area')
-        self.set_solution_lavel_display_values(self.od_label)
-        self.set_solution_lavel_display_values(self.wall_label)
-        self.set_solution_lavel_display_values(self.id_label)
-        self.set_solution_lavel_display_values(self.wall_area_label)
-        
-        self.material_label = Label(text='Material = ')
-        self.calc_temp_label = Label(text='Calculated temperature = ')
-        self.strenght_at_calc_temp_label = Label(text='Strenght at calculated temp = ')
-        self.set_solution_lavel_display_values(self.material_label)
-        self.set_solution_lavel_display_values(self.calc_temp_label)
-        self.set_solution_lavel_display_values(self.strenght_at_calc_temp_label)
-        
+        self.generate_solution_layout()
         self.btn_calculate.bind(on_press=self.calculate_solution)
         
         self.print_solution()
@@ -64,16 +49,48 @@ class PressureCalculator(BoxLayout):
         self.add_widget(self.value_label)
         self.add_widget(self.solution_layout)
         
+    def generate_solution_layout(self) -> GridLayout:
+        self.solution_layout = GridLayout()
+        self.solution_layout.cols = 4
+        self.od_label = Label(text='OD')
+        self.od_value = Label()
+        self.wall_label = Label(text='Wall')
+        self.wall_value = Label()
+        self.id_label = Label(text='ID')
+        self.id_value = Label()
+        self.wall_area_label = Label(text='Wall Area')
+        self.wall_area_value = Label()
+        # self.set_solution_lavel_display_values(self.od_label)
+        # self.set_solution_lavel_display_values(self.wall_label)
+        # self.set_solution_lavel_display_values(self.id_label)
+        # self.set_solution_lavel_display_values(self.wall_area_label)
+        
+        self.material_label = Label(text='Material')
+        self.material_value = Label()
+        self.calc_temp_label = Label(text='Calculated temperature')
+        self.calc_temp_value = Label()
+        self.strenght_at_calc_temp_label = Label(text='Strenght at calculated temp')
+        self.strenght_at_calc_temp_value = Label()
+        # self.set_solution_lavel_display_values(self.material_label)
+        # self.set_solution_lavel_display_values(self.calc_temp_label)
+        # self.set_solution_lavel_display_values(self.strenght_at_calc_temp_label)
         
         
     def print_solution(self):
         self.solution_layout.add_widget(self.od_label)
+        self.solution_layout.add_widget(self.od_value)
         self.solution_layout.add_widget(self.wall_label)
+        self.solution_layout.add_widget(self.wall_value)
         self.solution_layout.add_widget(self.id_label)
+        self.solution_layout.add_widget(self.id_value)
         self.solution_layout.add_widget(self.wall_area_label)
+        self.solution_layout.add_widget(self.wall_area_value)
         self.solution_layout.add_widget(self.material_label)
+        self.solution_layout.add_widget(self.material_value)
         self.solution_layout.add_widget(self.calc_temp_label)
+        self.solution_layout.add_widget(self.calc_temp_value)
         self.solution_layout.add_widget(self.strenght_at_calc_temp_label)
+        self.solution_layout.add_widget(self.strenght_at_calc_temp_value)
                 
 
 
@@ -107,13 +124,13 @@ class PressureCalculator(BoxLayout):
         
         # solution = f'{od=}, {wall=}, id={id:.2f}, wall_area={wall_area:.2f}'
         
-        self.od_label.text = f'OD => {od} mm'
-        self.wall_label.text = f'Wall => {wall:.2f} mm'
-        self.id_label.text = f'ID => {id:.2f} mm'
-        self.wall_area_label.text = f'Wall Area => {wall_area:.2f} mm'
-        self.material_label.text = f'Material = {material}'
-        self.calc_temp_label.text = f'Calculated temperature = {calc_temp} C'
-        self.strenght_at_calc_temp_label.text = f'Strenght at calculated temp = {self.aproximate_strenght_at_calc_temp(material, calc_temp):.2f} MPa'
+        self.od_value.text = f'{od} mm'
+        self.wall_value.text = f'{wall:.2f} mm'
+        self.id_value.text = f'{id:.2f} mm'
+        self.wall_area_value.text = f'{wall_area:.2f} mm2'
+        self.material_value.text = f'{material}'
+        self.calc_temp_value.text = f'{calc_temp} °C'
+        self.strenght_at_calc_temp_value.text = f'{self.aproximate_strenght_at_calc_temp(material, calc_temp):.2f} MPa'
 
 
     # Validation main function
@@ -168,8 +185,9 @@ class PressureCalculator(BoxLayout):
         return False
     ###################################
     
-    def set_solution_lavel_display_values(self, widget:Widget) -> None:
-        widget.size_hint_y = 0.3
+    # def set_solution_lavel_display_values(self, widget:Widget) -> None:
+    #     # widget.size_hint_y = 0.3
+    #     pass
     
     def aproximate_strenght_at_calc_temp(self, material, calc_temp) -> int:
         material_dict = self.db_json['strenght_at_temp'][material]
